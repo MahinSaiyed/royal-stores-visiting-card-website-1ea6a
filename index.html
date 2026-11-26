@@ -7,6 +7,16 @@
   <meta name="description" content="Royal Stores - Professional Clothing Repair & Fabric Vulcanizing Services. Door-to-door pickup & home delivery. Call Shehzad Alvi at +91 97231 14370. Minimum order ₹300.">
   <meta name="theme-color" content="#0a1c32">
 
+  <!-- Google tag (gtag.js) - Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQQ2ZFXNJ0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-SQQ2ZFXNJ0');
+  </script>
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3909,6 +3919,14 @@
       const successModal = document.getElementById('successModal');
       successModal.style.display = 'flex';
 
+      // Track form lead in Google Analytics
+      if (typeof gtag === "function") {
+        gtag("event", "generate_lead", {
+          event_category: "Leads",
+          event_label: "Doorstep Pickup Request"
+        });
+      }
+
       // Open WhatsApp in new tab
       window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     }
@@ -3946,6 +3964,44 @@
     try {
       localStorage.removeItem("royal_theme");
       document.documentElement.removeAttribute("data-theme");
+    } catch (e) {}
+
+    // Google Analytics 4 Custom Event Trackers
+    try {
+      // 1. Visiting Card QR Code Scan Detection
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("source") === "qr" || urlParams.get("source") === "visiting_card" || urlParams.get("source") === "visiting_card_qr") {
+        if (typeof gtag === "function") {
+          gtag("event", "qr_code_scan", {
+            event_category: "Acquisition",
+            event_label: "Visiting Card QR Code"
+          });
+        }
+      }
+
+      // 2. Direct Phone Call Clicks
+      document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+        link.addEventListener("click", () => {
+          if (typeof gtag === "function") {
+            gtag("event", "call_click", {
+              event_category: "Contact",
+              event_label: link.getAttribute("href")
+            });
+          }
+        });
+      });
+
+      // 3. WhatsApp Direct Inquiry Clicks
+      document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
+        link.addEventListener("click", () => {
+          if (typeof gtag === "function") {
+            gtag("event", "whatsapp_chat_click", {
+              event_category: "Contact",
+              event_label: "WhatsApp Chat Button"
+            });
+          }
+        });
+      });
     } catch (e) {}
 
     /* ==========================================================================

@@ -7,6 +7,16 @@
   <meta name="description" content="Order tailoring materials, zipper runners, jeans buttons, brass & jacket zippers, FabriBond Plus and Megibha elastic rolls directly via WhatsApp from Royal Stores.">
   <meta name="theme-color" content="#0a1c32">
 
+  <!-- Google tag (gtag.js) - Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQQ2ZFXNJ0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-SQQ2ZFXNJ0');
+  </script>
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1523,6 +1533,16 @@
 
       document.getElementById('addressModal').style.display = 'flex';
       addrInput.focus();
+
+      // Track begin checkout in Google Analytics 4
+      if (typeof gtag === "function") {
+        gtag("event", "begin_checkout", {
+          event_category: "Ecommerce",
+          event_label: product.title,
+          value: totalAmount,
+          currency: "INR"
+        });
+      }
     }
 
     function closeAddressModal() {
@@ -1593,6 +1613,22 @@
       msg += "Thank you!";
 
       closeAddressModal();
+
+      // Track WhatsApp order purchase in Google Analytics 4
+      if (typeof gtag === "function") {
+        gtag("event", "purchase", {
+          transaction_id: "RS_" + Date.now(),
+          value: totalAmount,
+          currency: "INR",
+          payment_type: selectedPay,
+          items: [{
+            item_id: product.id,
+            item_name: product.title,
+            price: unitPrice,
+            quantity: currentQty
+          }]
+        });
+      }
 
       const encoded = encodeURIComponent(msg);
       const whatsappUrl = "https://wa.me/" + product.recipientNumber + "?text=" + encoded;
